@@ -149,6 +149,21 @@ struct ParsedMvfstConfig {
       std::optional<uint32_t>>
       max_conn_packets_sent_per_loop;
   rfl::Description<
+      "Time budget for one write loop, expressed as srtt/N (default: 25). "
+      "0 removes the limit. The budget scales with RTT, so a value tuned for "
+      "internet paths is much tighter on a short one: at 25, a 0.4ms "
+      "datacenter RTT allows only ~16us per loop, ending the loop early and "
+      "spending more event-loop iterations per byte. Set 0 when pacing is on, "
+      "which is what mvfst's own tperf benchmark does.",
+      std::optional<uint32_t>>
+      write_limit_rtt_fraction;
+  rfl::Description<
+      "Smallest interval the pacer will use, in microseconds (default: 1000). "
+      "Coarser ticks release larger bursts; tperf uses 200. Only has an effect "
+      "when pacing_enabled is true.",
+      std::optional<uint32_t>>
+      pacing_tick_interval_us;
+  rfl::Description<
       "Use recvmmsg for batch receives in QuicServerWorker (default: true). "
       "Enables the recvmmsg kernel call to read multiple UDP packets per syscall, "
       "reducing overhead at high packet rates.",

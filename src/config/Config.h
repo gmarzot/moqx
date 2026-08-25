@@ -93,6 +93,15 @@ struct MvfstConfig {
   // Per-connection write loop limit. Written to both maxBatchSize and
   // writeConnectionDataPacketsLimit so the cap is honored in all batching modes.
   uint32_t maxConnPacketsSentPerLoop{48};
+  // Time budget for one write loop, as srtt/N. 0 removes the limit. The value
+  // scales with RTT, so a setting tuned for the internet is far tighter on a
+  // short path: at 25 a 0.4ms datacenter RTT allows ~16us per loop, which ends
+  // the loop early and spends more event-loop iterations per byte sent.
+  // mvfst's own tperf sets this to 0 whenever pacing is enabled.
+  uint32_t writeLimitRttFraction{25};
+  // Smallest interval the pacer will use, microseconds. Coarse ticks release
+  // larger bursts; tperf uses 200us against mvfst's 1000us default.
+  uint32_t pacingTickIntervalUs{1000};
 
   // Receive-path tuning.
   // Use recvmmsg for batch receives in QuicServerWorker.

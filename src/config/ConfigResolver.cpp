@@ -859,6 +859,10 @@ void applyMvfstOverride(MvfstConfig& base, const ParsedMvfstConfig& overlay) {
     base.enableGSO = *v;
   if (auto v = overlay.max_conn_packets_sent_per_loop.value())
     base.maxConnPacketsSentPerLoop = *v;
+  if (auto v = overlay.write_limit_rtt_fraction.value())
+    base.writeLimitRttFraction = *v;
+  if (auto v = overlay.pacing_tick_interval_us.value())
+    base.pacingTickIntervalUs = *v;
   if (auto v = overlay.use_recvmmsg.value())
     base.useRecvmmsg = *v;
   if (auto v = overlay.max_server_recv_packets_per_loop.value())
@@ -1009,6 +1013,11 @@ void validateMvfstConfig(
   }
   if (mvfst.numGROBuffers == 0) {
     errors.push_back(context + " mvfst: num_gro_buffers must be >= 1");
+  }
+  // 0 is meaningful here: it removes the write-loop time limit entirely.
+  if (mvfst.pacingEnabled && mvfst.pacingTickIntervalUs == 0) {
+    errors.push_back(
+        context + " mvfst: pacing_tick_interval_us must be >= 1 when pacing_enabled");
   }
   if (mvfst.numGROBuffers > 64) {
     warnings.push_back(

@@ -115,6 +115,8 @@ inline void serializeMvfst(ConfigSink& s, const MvfstConfig& m) {
   s.boolField("pacing_enabled", m.pacingEnabled);
   s.boolField("enable_gso", m.enableGSO);
   s.uintField("max_conn_packets_sent_per_loop", m.maxConnPacketsSentPerLoop);
+  s.uintField("write_limit_rtt_fraction", m.writeLimitRttFraction);
+  s.uintField("pacing_tick_interval_us", m.pacingTickIntervalUs);
   s.boolField("use_recvmmsg", m.useRecvmmsg);
   s.uintField("max_server_recv_packets_per_loop", m.maxServerRecvPacketsPerLoop);
   s.uintField("num_gro_buffers", m.numGROBuffers);

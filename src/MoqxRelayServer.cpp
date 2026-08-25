@@ -140,6 +140,8 @@ buildTransportSettings(const config::QuicConfig& quic, const config::MvfstConfig
                                     : quic::QuicBatchingMode::BATCHING_MODE_SENDMMSG;
   ts.maxBatchSize = mvfst.maxConnPacketsSentPerLoop;
   ts.writeConnectionDataPacketsLimit = mvfst.maxConnPacketsSentPerLoop;
+  ts.writeLimitRttFraction = mvfst.writeLimitRttFraction;
+  ts.pacingTickInterval = std::chrono::microseconds(mvfst.pacingTickIntervalUs);
   ts.dataPathType = quic::DataPathType::ContinuousMemory;
   ts.shouldUseWrapperRecvmmsgForBatchRecv = mvfst.useRecvmmsg;
   ts.maxServerRecvPacketsPerLoop = mvfst.maxServerRecvPacketsPerLoop;
